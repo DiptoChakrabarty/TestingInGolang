@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"strings"
 	"testing"
 )
@@ -61,4 +62,17 @@ func Test_checkNumber(t *testing.T) {
 			t.Errorf("incorrect value returned for %s", e.input)
 		}
 	}
+}
+
+func Test_readUserInput(t *testing.T) {
+	// we need a channel and an instance of io.Reader
+	doneChan := make(chan bool)
+
+	var stdin bytes.Buffer
+
+	stdin.Write([]byte("1\nq\n"))
+
+	go readUserInput(&stdin, doneChan)
+	<-doneChan
+	close(doneChan)
 }
