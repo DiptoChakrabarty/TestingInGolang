@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"bufio"
+	"strings"
+	"testing"
+)
 
 func Test_checkPrime(t *testing.T) {
 	primeTests := []struct {
@@ -14,7 +18,7 @@ func Test_checkPrime(t *testing.T) {
 		{"zero", 0, false, "0 is not prime"},
 		{"one", 1, false, "1 is not prime"},
 		{"two", 2, true, "2 is a prime no"},
-		{"neg", -5, false, "-5 is a prime no"},
+		{"neg", -5, false, "-5 is negative not prime"},
 	}
 
 	for _, p := range primeTests {
@@ -25,6 +29,36 @@ func Test_checkPrime(t *testing.T) {
 
 		if p.msg != msg {
 			t.Errorf("%s expected msg %s but got %s", p.name, p.msg, msg)
+		}
+	}
+}
+
+func Test_checkNumber(t *testing.T) {
+	// We need to simulate user input in this test
+	// bufioNewScanner expects io reader so we provide that
+
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{name: "empty", input: "", expected: "Please enter whole number"},
+		{name: "quit", input: "q", expected: ""},
+		{name: "prime", input: "5", expected: "5 is a prime no"},
+		{name: "not prime", input: "15", expected: "15 is not prime divisble by 3"},
+		{name: "negative", input: "-6", expected: "-6 is negative not prime"},
+		{name: "string", input: "six", expected: "Please enter whole number"},
+		{name: "decimal", input: "1.9", expected: "Please enter whole number"},
+	}
+
+	for _, e := range tests {
+		input := strings.NewReader(e.input)
+		reader := bufio.NewScanner(input)
+
+		result, _ := checkNumber(reader)
+
+		if !strings.EqualFold(result, e.expected) {
+			t.Errorf("incorrect value returned for %s", e.input)
 		}
 	}
 }
