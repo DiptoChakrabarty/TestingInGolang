@@ -26,6 +26,5 @@ func Test_checkPrime(t *testing.T) {
 		if p.msg != msg {
 			t.Errorf("%s expected msg %s but got %s", p.name, p.msg, msg)
 		}
-
 	}
 }
